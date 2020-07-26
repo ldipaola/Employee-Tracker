@@ -1,6 +1,11 @@
-var mysql = require("mysql");
 
-var connection = mysql.createConnection({
+// Dependencies
+// =============================================================
+const mysql = require("mysql");
+const inquirer = require('inquirer');
+const cTable = require('console.table');
+
+const connection = mysql.createConnection({
   host: "localhost",
 
   // Your port; if not 3306
