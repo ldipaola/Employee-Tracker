@@ -1,0 +1,22 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "CLI to view and manage the departments, roles, and employees in a company",
+  "main": "employee_tracker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ldipaola/Employee-Tracker.git"
+  },
+  "author": "Lucas Di Paola",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ldipaola/Employee-Tracker/issues"
+  },
+  "homepage": "https://github.com/ldipaola/Employee-Tracker#readme",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}
