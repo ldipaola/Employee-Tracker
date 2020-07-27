@@ -4,6 +4,7 @@
 const mysql = require("mysql");
 const inquirer = require('inquirer');
 const cTable = require('console.table');
+const pw = require('./pw.js');
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -15,12 +16,29 @@ const connection = mysql.createConnection({
   user: "root",
 
   // Your password
-  password: "",
+  password: pw,
   database: "employee_trackerdb"
 });
 
 connection.connect(function(err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId);
+  mainPrompt()
   connection.end();
 });
+
+
+function mainPrompt() {
+  inquirer
+    .prompt([
+        {
+            type: 'list',
+            name: 'choices',
+            message: 'What would you like to do?',
+            choices: ['Add', 'View', 'Update', 'Exit'],
+          },
+    ]).then(val => {
+      //if(val.choices === 'Add') addCommandPromt();
+      console.table(val);
+    })
+}
