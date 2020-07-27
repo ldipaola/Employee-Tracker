@@ -38,7 +38,22 @@ function mainPrompt() {
             choices: ['Add', 'View', 'Update', 'Exit'],
           },
     ]).then(val => {
-      //if(val.choices === 'Add') addCommandPromt();
+      if(val.choices === 'Add') addCommandPromt();
       console.table(val);
     })
+}
+
+function addCommandPromt() {
+  inquirer
+    .prompt([
+        {
+            type: 'list',
+            name: 'choices',
+            message: 'What would you like to do?',
+            choices: ['Add department', 'Add Role', 'Add Employee', 'Exit'],
+          },
+    ]).then(val => {
+      console.table(val);
+    })
+
 }
