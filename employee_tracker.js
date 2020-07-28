@@ -39,6 +39,7 @@ function mainPrompt() {
           },
     ]).then(val => {
       if(val.choices === 'Add') addCommandPromt();
+      if(val.choices === 'View') viewRoles();
       console.table(val);
     })
 }
@@ -56,4 +57,8 @@ function addCommandPromt() {
       console.table(val);
     })
 
+}
+
+function viewRoles() {
+  console.log('\n Test View Roles \n');
 }
