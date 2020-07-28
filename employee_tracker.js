@@ -41,6 +41,7 @@ function mainPrompt() {
       if(val.choices === 'Add') addCommandPromt();
       if(val.choices === 'View') viewRoles();
       if(val.choices === 'Update') updateRoles();
+      if(val.choices === 'Exit') return;
       console.table(val);
     })
 }
