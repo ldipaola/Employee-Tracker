@@ -24,8 +24,7 @@ const connection = mysql.createConnection({
 connection.connect(function(err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId);
-  mainPrompt()
-  connection.end();
+  mainPrompt();
 });
 
 
@@ -63,6 +62,11 @@ function addCommandPromt() {
 }
 
 function viewRoles() {
+  connection.query("SELECT * FROM role", function(err, res) {
+    if (err) throw err;
+    console.table(res);
+    connection.end();
+  });
   console.log('\n Test View Roles \n');
 }
 function updateRoles() {
