@@ -42,7 +42,6 @@ function mainPrompt() {
       if(val.choices === 'View') viewRoles();
       if(val.choices === 'Update') updateRoles();
       if(val.choices === 'Exit') return;
-      console.table(val);
     })
 }
 
@@ -62,11 +61,41 @@ function addCommandPromt() {
 }
 
 function viewRoles() {
-  connection.query("SELECT * FROM role", function(err, res) {
-    if (err) throw err;
-    console.table(res);
-    connection.end();
-  });
+  inquirer
+    .prompt([
+        {
+            type: 'list',
+            name: 'choices',
+            message: 'What would you like to do?',
+            choices: ['View Employees', 'View Departments', 'View Roles', 'Exit'],
+          },
+    ]).then(val => {
+      if(val.choices === 'View Employees') {
+        connection.query("SELECT employee.id, first_name, last_name, title, salary, name as Department FROM employee inner join role on employee.role_id = role.id inner join department on role.department_id = department.id", function(err, res) {
+          if (err) throw err;
+          console.table(res);
+          connection.end();
+        });
+      };
+      if(val.choices === 'View Departments') {
+        connection.query("SELECT * FROM department", function(err, res) {
+          if (err) throw err;
+          console.table(res);
+          connection.end();
+        });
+      };
+      if(val.choices === 'View Roles') {
+        connection.query("SELECT * FROM role", function(err, res) {
+          if (err) throw err;
+          console.table(res);
+          connection.end();
+        });
+      };
+      if(val.choices === 'Exit') return;
+    })
+
+
+  
   console.log('\n Test View Roles \n');
 }
 function updateRoles() {
