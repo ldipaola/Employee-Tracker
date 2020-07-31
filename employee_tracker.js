@@ -55,7 +55,36 @@ function addCommandPromt() {
             choices: ['Add department', 'Add Role', 'Add Employee', 'Exit'],
           },
     ]).then(val => {
-      console.table(val);
+      if (val.choices === 'Add department'){
+        inquirer
+          .prompt([
+        {
+            type: 'input',
+            name: 'department',
+            message: 'Department Name:',
+          },
+    ]).then(val => {
+      const department = val.department.trim();
+      if (val.department !== ''){
+      connection.query(`INSERT INTO department (name) VALUES ('${department}')`, function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        connection.end();
+      });
+     }
+    })
+
+      }
+      if (val.choices === 'Add Role'){
+
+      }
+      if (val.choices === 'Add Employee'){
+
+      }
+      if (val.choices === 'Exit'){
+
+      }
+      //console.table(val);
     })
 
 }
