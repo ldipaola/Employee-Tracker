@@ -6,7 +6,7 @@ const inquirer = require('inquirer');
 const cTable = require('console.table');
 const dotenv = require('dotenv').config();
 const validateNumber = require('./validateNumber');
-const validateTitle = require('./validateTitle');
+const validateInput = require('./validateInput');
 
 
 const connection = mysql.createConnection({
@@ -83,7 +83,7 @@ function addCommandPromt() {
             type: 'input',
             name: 'title',
             message: 'Title:',
-            validate: validateTitle,
+            validate: validateInput,
           },
           {
             type: 'number',
@@ -112,6 +112,40 @@ function addCommandPromt() {
 
       }
       if (val.choices === 'Add Employee'){
+        inquirer
+          .prompt([
+        {
+            type: 'input',
+            name: 'first_name',
+            message: 'Employee First Name:',
+            validate: validateInput,
+          },
+          {
+            type: 'input',
+            name: 'last_name',
+            message: 'Employee Last Name:',
+            validate: validateInput,
+          },
+          {
+            type: 'number',
+            name: 'role_id',
+            message: 'role id:',
+            validate: validateNumber,
+          },
+          {
+            type: 'number',
+            name: 'manager_id',
+            message: 'manager id:',
+            validate: validateNumber,
+          },          
+    ]).then(val => {
+      const { first_name, last_name, role_id, manager_id } = val;
+      connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id ) VALUES (?, ?, ?, ?)",[first_name, last_name, role_id, manager_id ], function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        connection.end();
+      });
+     })
 
       }
       if (val.choices === 'Exit'){
