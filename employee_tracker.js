@@ -4,7 +4,9 @@
 const mysql = require("mysql");
 const inquirer = require('inquirer');
 const cTable = require('console.table');
-const dotenv = require('dotenv').config()
+const dotenv = require('dotenv').config();
+const validateNumber = require('./validateNumber');
+const validateTitle = require('./validateTitle');
 
 
 const connection = mysql.createConnection({
@@ -66,16 +68,49 @@ function addCommandPromt() {
     ]).then(val => {
       const department = val.department.trim();
       if (val.department !== ''){
-      connection.query(`INSERT INTO department (name) VALUES ('${department}')`, function(err, res) {
+      connection.query("INSERT INTO department (name) VALUES (?)",[department], function(err, res) {
         if (err) throw err;
         console.table(res);
         connection.end();
       });
      }
     })
-
       }
       if (val.choices === 'Add Role'){
+        inquirer
+          .prompt([
+        {
+            type: 'input',
+            name: 'title',
+            message: 'Title:',
+            validate: validateTitle,
+          },
+          {
+            type: 'number',
+            name: 'salary',
+            message: 'Salary:',
+            validate: validateNumber,
+          },
+          {
+            type: 'number',
+            name: 'department_id',
+            message: 'Department id:',
+            validate: validateNumber,
+          },
+    
+          
+    ]).then(val => {
+      const { title } = val;
+      const { salary } = val;
+      const { department_id } = val;
+      if (val.department !== ''){
+      connection.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)",[title, salary, department_id], function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        connection.end();
+      });
+     }
+     })
 
       }
       if (val.choices === 'Add Employee'){
