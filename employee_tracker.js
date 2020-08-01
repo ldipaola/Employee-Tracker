@@ -103,13 +103,11 @@ function addCommandPromt() {
       const { title } = val;
       const { salary } = val;
       const { department_id } = val;
-      if (val.department !== ''){
       connection.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)",[title, salary, department_id], function(err, res) {
         if (err) throw err;
         console.table(res);
         connection.end();
       });
-     }
      })
 
       }
