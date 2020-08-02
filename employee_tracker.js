@@ -189,11 +189,67 @@ function viewRoles() {
       };
       if(val.choices === 'Exit') return;
     })
-
-
-  
-  console.log('\n Test View Roles \n');
 }
 function updateRoles() {
-  console.log('\n Test Update Roles \n');
+  connection.query("SELECT employee.id, first_name, last_name, title, salary, name as Department FROM employee inner join role on employee.role_id = role.id inner join department on role.department_id = department.id", function(err, res) {
+    if (err) throw err;
+    const employeeArr = [];
+    for (const employee of res) {
+      const emp = {
+        value: employee.id,
+        name: employee.id + ' ' + employee.first_name + ' ' + employee.last_name + ' ' + employee.title + ' ' + employee.salary + ' ' + employee.Department,
+      }
+      employeeArr.push(emp); 
+    }
+    inquirer
+          .prompt([
+        {
+            type: 'list',
+            name: 'employee_list',
+            message: 'Select employee:',
+            choices: [...employeeArr],
+          },
+    ]).then(val =>{
+      const selectEmp = res.filter(emp => emp.id === val.employee_list);
+      console.log(selectEmp);
+      inquirer
+          .prompt([
+        {
+            type: 'input',
+            name: 'first_name',
+            message: 'Employee First Name:',
+            default: `${selectEmp[0].first_name}`,
+          },
+          {
+            type: 'input',
+            name: 'last_name',
+            message: 'Employee Last Name:',
+            default: `${selectEmp[0].last_name}`,
+          },
+          {
+            type: 'number',
+            name: 'role_id',
+            message: 'role id:',
+            validate: validateNumber,
+          },
+          {
+            type: 'number',
+            name: 'manager_id',
+            message: 'manager id:',
+            validate: validateNumber,
+          },          
+    ]).then(val => {
+      console.log(val);
+      connection.query("UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, manager_id = ? WHERE employee.id = ?", [val.first_name, val.last_name, val.role_id, val.manager_id, selectEmp[0].id], function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        connection.end();
+      });
+    })
+      
+
+
+    })
+  });
+
 }
