@@ -43,7 +43,7 @@ function mainPrompt() {
       if(val.choices === 'Add') addCommandPromt();
       if(val.choices === 'View') viewRoles();
       if(val.choices === 'Update') updateRoles();
-      if(val.choices === 'Exit') return;
+      if(val.choices === 'Exit') connection.end();
     })
 }
 
@@ -54,7 +54,7 @@ function addCommandPromt() {
             type: 'list',
             name: 'choices',
             message: 'What would you like to do?',
-            choices: ['Add department', 'Add Role', 'Add Employee', 'Exit'],
+            choices: ['Add department', 'Add Role', 'Add Employee', 'Back'],
           },
     ]).then(val => {
       if (val.choices === 'Add department'){
@@ -71,7 +71,7 @@ function addCommandPromt() {
       connection.query("INSERT INTO department (name) VALUES (?)",[department], function(err, res) {
         if (err) throw err;
         console.table(res);
-        connection.end();
+        mainPrompt();
       });
      }
     })
@@ -106,7 +106,7 @@ function addCommandPromt() {
       connection.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)",[title, salary, department_id], function(err, res) {
         if (err) throw err;
         console.table(res);
-        connection.end();
+        mainPrompt();
       });
      })
 
@@ -143,15 +143,12 @@ function addCommandPromt() {
       connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id ) VALUES (?, ?, ?, ?)",[first_name, last_name, role_id, manager_id ], function(err, res) {
         if (err) throw err;
         console.table(res);
-        connection.end();
+        mainPrompt();
       });
      })
 
       }
-      if (val.choices === 'Exit'){
-
-      }
-      //console.table(val);
+      if (val.choices === 'Back') mainPrompt();
     })
 
 }
@@ -170,24 +167,24 @@ function viewRoles() {
         connection.query("SELECT employee.id, first_name, last_name, title, salary, name as Department FROM employee inner join role on employee.role_id = role.id inner join department on role.department_id = department.id", function(err, res) {
           if (err) throw err;
           console.table(res);
-          connection.end();
+          mainPrompt();
         });
       };
       if(val.choices === 'View Departments') {
         connection.query("SELECT * FROM department", function(err, res) {
           if (err) throw err;
           console.table(res);
-          connection.end();
+          mainPrompt();
         });
       };
       if(val.choices === 'View Roles') {
         connection.query("SELECT * FROM role", function(err, res) {
           if (err) throw err;
           console.table(res);
-          connection.end();
+          mainPrompt();
         });
       };
-      if(val.choices === 'Exit') return;
+      if(val.choices === 'Exit') mainPrompt();
     })
 }
 function updateRoles() {
@@ -197,7 +194,7 @@ function updateRoles() {
     for (const employee of res) {
       const emp = {
         value: employee.id,
-        name: employee.id + ' ' + employee.first_name + ' ' + employee.last_name + ' ' + employee.title + ' ' + employee.salary + ' ' + employee.Department,
+        name: employee.id + ' | ' + employee.first_name + ' ' + employee.last_name + ' | ' + employee.title + ' | ' + employee.salary + ' | ' + employee.Department,
       }
       employeeArr.push(emp); 
     }
@@ -210,6 +207,7 @@ function updateRoles() {
             choices: [...employeeArr],
           },
     ]).then(val =>{
+      if (val.employee_list === "Cancel") mainPrompt();
       const selectEmp = res.filter(emp => emp.id === val.employee_list);
       console.log(selectEmp);
       inquirer
@@ -218,13 +216,13 @@ function updateRoles() {
             type: 'input',
             name: 'first_name',
             message: 'Employee First Name:',
-            default: `${selectEmp[0].first_name}`,
+            default: selectEmp[0].first_name,
           },
           {
             type: 'input',
             name: 'last_name',
             message: 'Employee Last Name:',
-            default: `${selectEmp[0].last_name}`,
+            default: selectEmp[0].last_name,
           },
           {
             type: 'number',
@@ -243,7 +241,7 @@ function updateRoles() {
       connection.query("UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, manager_id = ? WHERE employee.id = ?", [val.first_name, val.last_name, val.role_id, val.manager_id, selectEmp[0].id], function(err, res) {
         if (err) throw err;
         console.table(res);
-        connection.end();
+        mainPrompt();
       });
     })
       
